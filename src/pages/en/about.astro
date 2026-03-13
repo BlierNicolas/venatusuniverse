@@ -1,13 +1,16 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from '../../layouts/Layout.astro';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 
-const pageTitle = "À propos";
+const aboutURL = getRelativeLocaleUrl("en", "about");
+
+const pageTitle = "About Me";
 
 const identity = {
   firstName: "Wamien",
   country: "Canada",
-  occupation: "Développeur web",
-  hobbies: ["écriture", "gaming", "programmation"],
+  occupation: "Web Dev.",
+  hobbies: ["writting", "gaming", "programming"],
 };
 
 const skills = ["HTML", "CSS", "JavaScript", "React", "Astro", "Writing Docs"];
@@ -21,7 +24,7 @@ const fontWeight = "bold";
 const textCase = "uppercase";
 ---
 <Layout pageTitle={pageTitle}>
-    <h2>... et c'est mon nouveau site Astro!</h2>
+    <h2>... and my new Astro site!</h2>
 
     <p>I am working through Astro's introductory tutorial. This is the second page on my website, and it's the first one I built myself!</p>
 

@@ -1,8 +1,13 @@
 ---
+import { getLangFromUrl, useTranslatedPath, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 ---
 <div id="main-menu" class="nav-links">
-    <a href="/">Home</a>
-    <a href="/about/">About</a>
-    <a href="/blog/">Blog</a>
-    <a href="/tags/">Tags</a>
+    <a href={translatePath('/home/')}>{t('nav.home')}</a>
+    <a href={translatePath('/about/')}>{t('nav.about')}</a>
+    <a href="/${lang}/blog/">Blog</a>
+    <a href="/${lang}/tags/">Tags</a>
 </div>
