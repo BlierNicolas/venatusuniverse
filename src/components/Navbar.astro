@@ -1,13 +1,11 @@
 ---
-import { getLangFromUrl, useTranslatedPath, useTranslations } from '../i18n/utils';
+import { getLocalizedUrl, t } from '../i18n';
 
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
-const translatePath = useTranslatedPath(lang);
+const locale = Astro.currentLocale ?? 'fr';
 ---
 <div id="main-menu" class="nav-links">
-    <a href={translatePath('/home/')}>{t('nav.home')}</a>
-    <a href={translatePath('/about/')}>{t('nav.about')}</a>
-    <a href="/${lang}/blog/">Blog</a>
-    <a href="/${lang}/tags/">Tags</a>
+    <a href={getLocalizedUrl(locale, '/')}>{t('home', locale)}</a>
+    <a href={getLocalizedUrl(locale, '/about')}>{t('about', locale)}</a>
+    <a href={getLocalizedUrl(locale, '/blog')}>{t('blog', locale)}</a>
+    <a href={getLocalizedUrl(locale, '/tags')}>{t('tags', locale)}</a>
 </div>
