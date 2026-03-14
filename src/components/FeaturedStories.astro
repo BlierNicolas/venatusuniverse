@@ -1,23 +1,37 @@
 ---
-import StoryCard from '../components/StoryCard.astro';
+import StoryCard from "../components/StoryCard.astro";
+import { contentfulClient } from "../lib/contentful";
+import type { Story } from "../lib/contentful";
+
+const entries = await contentfulClient.getEntries<Story>({
+  content_type: "infosRomans",
+});
+
+const featuredStories = entries.items
+  .filter((item) => item.fields.featured)
+  .map((item) => {
+    const { title, summary, slug } = item.fields;
+    return {
+      title,
+      summary,
+      url: `histoires/${slug}`,
+      link: "Commencer à lire",
+    };
+  });
 ---
+
 <div>
-    <h2>Histoires mises en avant</h2>
-    <div>
+  <h2>Histoires mises en avant</h2>
+  <div>
+    {
+      featuredStories.map((story) => (
         <StoryCard
-            title="Gout du Sang"
-            summary="Les péripéties de Saeko Black, la vampire solitaire. Son histoire se passe 6 ans avant Le Premier Cyborg, mais Saeko n'a physiquement que 19 ans."
-            url="histoires/gout-du-sang"
-            link="Commencer à lire"/>
-        <StoryCard
-            title="Le Premier Cyborg - Tome 1"
-            summary="Wamien Mata est le premier être humain à devenir un cyborg suite à un incendie. Il découvrira une chose fabuleuse par la suite, il fait partie des quelques humains à posséder un pouvoir, le sien est le contrôle de la technologie. Il fera la rencontre de plusieurs autres personnes dans son cas et se rendra compte qu'il a un rôle majeur à jouer dans tout ça."
-            url="histoires/le-premier-cyborg-tome-1"
-            link="Commencer à lire"/>
-        <StoryCard
-            title="Le Premier Cyborg - Tome 2"
-            summary="C'est l'histoire de Wamien et de la guilde deux ans après l'enfermement des Black Eagles. Les cas de nouveaux humains sont de plus en plus fréquents et tous ne gardent pas de bonnes intentions pour leurs pouvoirs. La guilde devra donc grandir et former de nouveaux membres pour affronter et neutraliser les nouveaux humains qui nuisent aux simples humains comme vous."
-            url="histoires/le-premier-cyborg-tome-2"
-            link="Commencer à lire"/>
-    </div>
+          title={story.title}
+          summary={story.summary}
+          url={story.url}
+          link={story.link}
+        />
+      ))
+    }
+  </div>
 </div>
