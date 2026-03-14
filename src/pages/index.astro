@@ -1,9 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Jumbotron from '../components/Jumbotron.astro';
+import FeaturedStories from '../components/FeaturedStories.astro';
 
-const pageTitle = "Home Page";
+const pageTitle = "Accueil";
 ---
 
 <Layout pageTitle={pageTitle}>
-	<h2>My awesome blog subtitle</h2>
+	<Jumbotron />
+	<FeaturedStories />
 </Layout>
