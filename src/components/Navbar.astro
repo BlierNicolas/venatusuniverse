@@ -1,9 +1,11 @@
 ---
+import { getLocalizedUrl, t } from '../i18n';
+
+const locale = Astro.currentLocale ?? 'fr';
 ---
 <div id="main-menu" class="nav-links">
-    <a href="/">Accueil</a>
-    <a href="/nouvelles/">Quoi de nouveaux?</a>
-    Coin lecture
-    Wiki
-    Connexion
+    <a href={getLocalizedUrl(locale, '/')}>{t('home', locale)}</a>
+    <a href={getLocalizedUrl(locale, '/about')}>{t('about', locale)}</a>
+    <a href={getLocalizedUrl(locale, '/blog')}>{t('blog', locale)}</a>
+    <a href={getLocalizedUrl(locale, '/tags')}>{t('tags', locale)}</a>
 </div>

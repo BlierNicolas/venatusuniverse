@@ -1,5 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const aboutURL = getRelativeLocaleUrl("en", "about");
 
 const pageTitle = "About Me";
 
