@@ -1,0 +1,28 @@
+---
+import type { Entry } from 'contentful';
+import type { Group, GroupMember } from '../lib/contentful';
+import { t } from '../i18n';
+
+export interface Props {
+  item: Entry<Group>;
+  members: Entry<GroupMember>[];
+  locale: string;
+}
+
+const { item, members, locale } = Astro.props;
+const charBase = locale === 'fr' ? '/personnages' : '/en/characters';
+---
+<article>
+  <h1>{item.fields.groupName}</h1>
+  <p>{item.fields.description}</p>
+</article>
+  {members.length > 0 && (
+    <section>
+      <h2>{t('membersLabel', locale)}</h2>
+      <ul>
+        {members.map((m) => (
+          <li><a href={`${charBase}/${m.fields.memberSlug}`}>{m.fields.memberName}</a> &mdash; {m.fields.memberRole} ({m.fields.status})</li>
+        ))}
+      </ul>
+    </section>
+  )}

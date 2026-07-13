@@ -1,25 +1,115 @@
 ---
+import Head from '../components/Head.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { t } from '../i18n';
+import type { Crumb } from '../components/Breadcrumbs.astro';
 import '../styles/global.css';
 
-const { pageTitle } = Astro.props;
+export interface Props {
+  pageTitle: string;
+  description?: string;
+  breadcrumbs?: Crumb[];
+}
+
+const { pageTitle, description, breadcrumbs } = Astro.props as Props;
+const locale = Astro.currentLocale ?? 'fr';
+
+const resolvedCrumbs: Crumb[] = breadcrumbs ?? getDefaultCrumbs(Astro.url.pathname, locale);
+
+function getDefaultCrumbs(pathname: string, loc: string): Crumb[] {
+  const home = loc === 'fr' ? 'Accueil' : 'Home';
+  const homeUrl = loc === 'fr' ? '/' : '/en';
+  const segments = pathname.replace(/^\/(en|fr)\/?/, '').split('/').filter(Boolean);
+  if (segments.length === 0) return [{ label: home }];
+
+  const crumbs: Crumb[] = [{ label: home, url: homeUrl }];
+  for (let i = 0; i < segments.length; i++) {
+    const path = '/' + segments.slice(0, i + 1).join('/');
+    const key = segments[i];
+    const label = segLabel(key, loc);
+    const isLast = i === segments.length - 1;
+    crumbs.push(isLast ? { label } : { label, url: path });
+  }
+  return crumbs;
+}
+
+function segLabel(seg: string, loc: string): string {
+  const map: Record<string, string> = {
+    news: t('news', loc),
+    stories: t('stories', loc),
+    characters: t('characters', loc),
+    powers: t('powers', loc),
+    groups: t('groups', loc),
+    events: t('events', loc),
+    projects: t('projects', loc),
+    calendar: t('calendar', loc),
+    encyclopedia: t('encyclopedia', loc),
+    giervia: t('giervia', loc),
+    about: loc === 'fr' ? 'À propos' : 'About',
+    contributors: t('contributors', loc),
+    progression: t('progression', loc),
+    numbers: t('universeInNumbers', loc),
+    chapter: loc === 'fr' ? 'Chapitre' : 'Chapter',
+    tags: loc === 'fr' ? 'Étiquettes' : 'Tags',
+    histoires: t('stories', loc),
+    personnages: t('characters', loc),
+    pouvoirs: t('powers', loc),
+    groupes: t('groups', loc),
+    nouvelles: t('news', loc),
+    evenements: t('events', loc),
+    projets: t('projects', loc),
+    calendrier: t('calendar', loc),
+    encyclopedie: t('encyclopedia', loc),
+    contributeurs: t('contributors', loc),
+    statistiques: t('universeInNumbers', loc),
+    'a-propos': loc === 'fr' ? 'À propos' : 'About',
+    etiquettes: loc === 'fr' ? 'Étiquettes' : 'Tags',
+    chapitre: loc === 'fr' ? 'Chapitre' : 'Chapter',
+  };
+  return map[seg] ?? seg;
+}
 ---
-<html lang={Astro.currentLocale}>
+<html lang={locale}>
 	<head>
 		<meta charset="UTF-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>{pageTitle}</title>
+		<Head title={pageTitle} description={description} />
 	</head>
 	<body>
+		<a href="#main-content" class="skip-link">Aller au contenu principal</a>
 		<Header />
-		<slot />
+		<div id="main-content" role="main" tabindex="-1">
+			<Breadcrumbs crumbs={resolvedCrumbs} />
+			<slot />
+		</div>
 		<Footer />
 		<script>
 			import "../scripts/menu.js";
 		</script>
 	</body>
 </html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    background: #00539f;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .skip-link:focus {
+    top: 0;
+  }
+  #main-content:focus {
+    outline: none;
+  }
+</style>

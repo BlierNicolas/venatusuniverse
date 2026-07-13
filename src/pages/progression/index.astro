@@ -1,0 +1,21 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProgressionContent from '../../components/ProgressionContent.astro';
+import { contentfulClient, type Story, mapLocale } from '../../lib/contentful';
+import { t } from '../../i18n';
+
+const locale = Astro.currentLocale ?? 'fr';
+const pageTitle = t('progression', locale);
+
+const response = await contentfulClient.getEntries<Story>({ content_type: 'infosRomans', locale: mapLocale(locale) });
+const stories = response.items;
+
+const ongoing = stories.filter(s => (s.fields.currentChapter ?? 0) < (s.fields.maximumChapter ?? 0));
+const finished = stories.filter(s => (s.fields.currentChapter ?? 0) >= (s.fields.maximumChapter ?? 0) && s.fields.maximumChapter > 0);
+const unknown = stories.filter(s => !s.fields.maximumChapter || s.fields.maximumChapter === 0);
+---
+<Layout pageTitle={pageTitle}>
+  <main>
+    <ProgressionContent {ongoing} {finished} {unknown} locale={locale} />
+  </main>
+</Layout>

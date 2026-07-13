@@ -1,0 +1,19 @@
+---
+import type { Entry } from 'contentful';
+import type { Theory } from '../lib/contentful';
+
+export interface Props {
+  item: Entry<Theory>;
+}
+
+const { item } = Astro.props;
+---
+<article>
+  <h1>{item.fields.title}</h1>
+  <p>{item.fields.description}</p>
+  <div>
+    {item.fields.text?.split('\n').map((paragraph) => (
+      paragraph.trim() ? <p>{paragraph}</p> : null
+    ))}
+  </div>
+</article>

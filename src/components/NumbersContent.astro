@@ -1,0 +1,17 @@
+---
+import { t } from '../i18n';
+
+export interface Props {
+  counts: { label: string; count: number }[];
+  locale: string;
+}
+
+const { counts, locale } = Astro.props;
+const title = t('universeInNumbers', locale);
+---
+<h1>{title}</h1>
+<ul>
+  {counts.map(({ label, count }) => (
+    <li><strong>{label}:</strong> {count}</li>
+  ))}
+</ul>

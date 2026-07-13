@@ -1,8 +1,10 @@
 ---
+import { getLocalizedUrl, t } from '../i18n';
+
+const locale = Astro.currentLocale ?? 'fr';
 ---
-<div>
-    <h1>L'Univers des Nouveaux Humains</h1>
-    <p>L'Univers des Nouveaux Humains est un Univers fictif où 0.01% de la population mondiale possède des pouvoirs.</p>
-    <p>Les pouvoirs sont détectables via un gène qui a été nommé le gène Drumel, au nom du scientifique qui a identifié les différents cas et possibilités de ce gène.</p>
-    <a href="histoires">Entrer dans l'Univers</button>
+<div class="jumbotron">
+    <h1>{t('heroTitle', locale)}</h1>
+    <p>{t('heroDescription', locale)}</p>
+    <a href={getLocalizedUrl(locale, '/stories')}>{t('heroCta', locale)}</a>
 </div>

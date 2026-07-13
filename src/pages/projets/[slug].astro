@@ -1,0 +1,27 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProjectDetail from '../../components/ProjectDetail.astro';
+import { contentfulClient, type Project } from '../../lib/contentful';
+import { t } from '../../i18n';
+
+export async function getStaticPaths() {
+  const response = await contentfulClient.getEntries<Project>({
+    content_type: 'project',
+    locale: 'fr-CA',
+    'fields.displayed': true,
+  });
+  return response.items.map((item) => ({
+    params: { slug: item.fields.slug },
+    props: { item },
+  }));
+}
+
+const { item } = Astro.props;
+const locale = Astro.currentLocale ?? 'fr';
+const pageTitle = item.fields.title;
+---
+<Layout pageTitle={pageTitle} breadcrumbs={[{ label: t('projects', locale), url: '/projets' }, { label: item.fields.title }]}>
+  <main>
+    <ProjectDetail item={item} locale={locale} />
+  </main>
+</Layout>

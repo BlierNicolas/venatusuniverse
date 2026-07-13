@@ -1,0 +1,28 @@
+---
+import type { Entry } from 'contentful';
+import type { Chapter } from '../lib/contentful';
+import { t } from '../i18n';
+
+export interface Props {
+  item: Entry<Chapter>;
+  prevChapter: Entry<Chapter> | null;
+  nextChapter: Entry<Chapter> | null;
+  locale: string;
+}
+
+const { item, prevChapter, nextChapter, locale } = Astro.props;
+const chBase = locale === 'fr' ? '/histoires/chapitre' : '/en/stories/chapter';
+---
+<article>
+  <h1>{item.fields.title}</h1>
+  {item.fields.readTime && <p>{t('readingTime', locale, { min: item.fields.readTime })}</p>}
+  <div>
+    {item.fields.text?.split('\n').map((paragraph) => (
+      paragraph.trim() ? <p>{paragraph}</p> : null
+    ))}
+  </div>
+  <nav>
+    {prevChapter && <a href={`${chBase}/${prevChapter.fields.slug}`}>{t('prevChapter', locale)}</a>}
+    {nextChapter && <a href={`${chBase}/${nextChapter.fields.slug}`}>{t('nextChapter', locale)}</a>}
+  </nav>
+</article>

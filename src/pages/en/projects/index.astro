@@ -1,0 +1,22 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ProjectList from '../../../components/ProjectList.astro';
+import { contentfulClient, type Project, mapLocale } from '../../../lib/contentful';
+import { t } from '../../../i18n';
+
+const locale = Astro.currentLocale ?? 'en';
+const pageTitle = t('projects', locale);
+
+const response = await contentfulClient.getEntries<Project>({
+  content_type: 'project',
+  locale: mapLocale(locale),
+  'fields.displayed': true,
+  order: ['fields.order'] as any,
+});
+const projects = response.items;
+---
+<Layout pageTitle={pageTitle}>
+  <main>
+    <ProjectList items={projects} locale={locale} />
+  </main>
+</Layout>

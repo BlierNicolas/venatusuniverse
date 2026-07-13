@@ -1,0 +1,30 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import GroupDetail from '../../../components/GroupDetail.astro';
+import { contentfulClient, type Group, type GroupMember, mapLocale } from '../../../lib/contentful';
+import { t } from '../../../i18n';
+
+export async function getStaticPaths() {
+  const response = await contentfulClient.getEntries<Group>({ content_type: 'groupe', locale: 'en-US' });
+  return response.items.map((item) => ({
+    params: { slug: item.fields.slug },
+    props: { item },
+  }));
+}
+
+const { item } = Astro.props;
+const locale = Astro.currentLocale ?? 'en';
+
+const memberResponse = await contentfulClient.getEntries<GroupMember>({
+  content_type: 'membreGroupe',
+  locale: mapLocale(locale),
+  'fields.groupName': item.fields.groupName,
+  order: ['fields.order'] as any,
+});
+const members = memberResponse.items;
+---
+<Layout pageTitle={item.fields.groupName} breadcrumbs={[{ label: t('groups', locale), url: '/en/groups' }, { label: item.fields.groupName }]}>
+  <main>
+    <GroupDetail item={item} members={members} locale={locale} />
+  </main>
+</Layout>

@@ -1,0 +1,38 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NumbersContent from '../../components/NumbersContent.astro';
+import { contentfulClient, mapLocale } from '../../lib/contentful';
+import { t } from '../../i18n';
+
+const locale = Astro.currentLocale ?? 'fr';
+const pageTitle = t('universeInNumbers', locale);
+
+const contentTypes = [
+  { id: 'infosRomans', label: t('stories', locale) },
+  { id: 'chapitre', label: t('chapter', locale) + 's' },
+  { id: 'personnage', label: t('characters', locale) },
+  { id: 'pouvoir', label: t('powers', locale) },
+  { id: 'groupe', label: t('groups', locale) },
+  { id: 'evenements', label: t('events', locale) },
+  { id: 'theorie', label: t('encyclopedia', locale) },
+  { id: 'nouvelle', label: t('news', locale) },
+  { id: 'project', label: t('projects', locale) },
+  { id: 'calendrier', label: t('calendar', locale) },
+  { id: 'monde', label: 'Mondes' },
+  { id: 'pays', label: 'Pays' },
+  { id: 'lieu', label: 'Lieux' },
+  { id: 'ville', label: 'Villes' },
+  { id: 'membreGroupe', label: 'Membres de groupes' },
+];
+
+const counts: { label: string; count: number }[] = [];
+for (const ct of contentTypes) {
+  const response = await contentfulClient.getEntries({ content_type: ct.id, limit: 1, locale: mapLocale(locale) });
+  counts.push({ label: ct.label, count: response.total });
+}
+---
+<Layout pageTitle={pageTitle}>
+  <main>
+    <NumbersContent counts={counts} locale={locale} />
+  </main>
+</Layout>

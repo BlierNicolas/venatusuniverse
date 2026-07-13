@@ -1,0 +1,17 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CharacterList from '../../../components/CharacterList.astro';
+import { contentfulClient, type Character, mapLocale } from '../../../lib/contentful';
+import { t } from '../../../i18n';
+
+const locale = Astro.currentLocale ?? 'en';
+const pageTitle = t('characters', locale);
+
+const response = await contentfulClient.getEntries<Character>({ content_type: 'personnage', locale: mapLocale(locale) });
+const characters = response.items.sort((a, b) => a.fields.fullName?.localeCompare(b.fields.fullName ?? '') ?? 0);
+---
+<Layout pageTitle={pageTitle}>
+  <main>
+    <CharacterList items={characters} locale={locale} />
+  </main>
+</Layout>

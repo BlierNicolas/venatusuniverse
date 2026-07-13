@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AboutContent from '../components/AboutContent.astro';
+
+const locale = Astro.currentLocale ?? 'fr';
+const pageTitle = "À propos";
+---
+<Layout pageTitle={pageTitle}>
+  <main>
+    <AboutContent locale={locale} />
+  </main>
+</Layout>

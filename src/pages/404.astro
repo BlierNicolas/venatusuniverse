@@ -1,0 +1,15 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { t } from '../i18n';
+
+const locale = Astro.currentLocale ?? 'fr';
+const pageTitle = t('page404Title', locale);
+---
+
+<Layout pageTitle={pageTitle}>
+	<main>
+		<h1>{pageTitle}</h1>
+		<p>{t('page404Message', locale)}</p>
+		<a href="/">{t('page404Cta', locale)}</a>
+	</main>
+</Layout>

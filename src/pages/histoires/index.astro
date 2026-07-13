@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import StoryList from '../../components/StoryList.astro';
+import { contentfulClient, type Story, mapLocale } from '../../lib/contentful';
+import { t } from '../../i18n';
+
+const locale = Astro.currentLocale ?? 'fr';
+const pageTitle = t('stories', locale);
+
+const response = await contentfulClient.getEntries<Story>({ content_type: 'infosRomans', include: 2, locale: mapLocale(locale) });
+const stories = response.items.sort((a, b) => (b.fields.featured ? 1 : 0) - (a.fields.featured ? 1 : 0));
+---
+<Layout pageTitle={pageTitle}>
+  <main>
+    <StoryList items={stories} locale={locale} />
+  </main>
+</Layout>

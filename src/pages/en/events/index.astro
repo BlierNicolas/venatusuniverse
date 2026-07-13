@@ -1,0 +1,17 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import EventList from '../../../components/EventList.astro';
+import { contentfulClient, type Event, mapLocale } from '../../../lib/contentful';
+import { t } from '../../../i18n';
+
+const locale = Astro.currentLocale ?? 'en';
+const pageTitle = t('events', locale);
+
+const response = await contentfulClient.getEntries<Event>({ content_type: 'evenements', locale: mapLocale(locale), order: ['fields.date'] as any });
+const events = response.items;
+---
+<Layout pageTitle={pageTitle}>
+  <main>
+    <EventList items={events} locale={locale} />
+  </main>
+</Layout>

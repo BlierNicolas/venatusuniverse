@@ -3,9 +3,59 @@ import { getLocalizedUrl, t } from '../i18n';
 
 const locale = Astro.currentLocale ?? 'fr';
 ---
-<div id="main-menu" class="nav-links">
+<div id="main-menu" class="nav-links" role="navigation" aria-label={t('home', locale)}>
     <a href={getLocalizedUrl(locale, '/')}>{t('home', locale)}</a>
-    <a href={getLocalizedUrl(locale, '/about')}>{t('about', locale)}</a>
-    <a href={getLocalizedUrl(locale, '/blog')}>{t('blog', locale)}</a>
-    <a href={getLocalizedUrl(locale, '/tags')}>{t('tags', locale)}</a>
+    <a href={getLocalizedUrl(locale, '/news')}>{t('whatsNew', locale)}</a>
+    <div class="dropdown">
+        <button class="dropdown-trigger" aria-expanded="false">{t('readingCorner', locale)}</button>
+        <div class="dropdown-content">
+            <a href={getLocalizedUrl(locale, '/stories')}>{t('ourStories', locale)}</a>
+            <a href={getLocalizedUrl(locale, '/calendar')}>{t('releaseCalendar', locale)}</a>
+            <a href={getLocalizedUrl(locale, '/progression')}>{t('progression', locale)}</a>
+            <a href={getLocalizedUrl(locale, '/projects')}>{t('projects', locale)}</a>
+        </div>
+    </div>
+    <div class="dropdown">
+        <button class="dropdown-trigger" aria-expanded="false">{t('wiki', locale)}</button>
+        <div class="dropdown-content">
+            <a href={getLocalizedUrl(locale, '/characters')}>{t('characters', locale)}</a>
+            <a href={getLocalizedUrl(locale, '/powers')}>{t('powers', locale)}</a>
+            <a href={getLocalizedUrl(locale, '/groups')}>{t('groups', locale)}</a>
+            <a href={getLocalizedUrl(locale, '/giervia')}>{t('giervia', locale)}</a>
+            <a href={getLocalizedUrl(locale, '/events')}>{t('events', locale)}</a>
+            <a href={getLocalizedUrl(locale, '/encyclopedia')}>{t('encyclopedia', locale)}</a>
+        </div>
+    </div>
+    <a href="#">{t('login', locale)}</a>
 </div>
+
+<style>
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  .dropdown-trigger {
+    cursor: pointer;
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    font: inherit;
+    color: inherit;
+  }
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background: var(--bg-color, #f1f5f9);
+    min-width: 220px;
+    z-index: 10;
+    border-radius: 4px;
+  }
+  .dropdown:hover .dropdown-content {
+    display: flex;
+    flex-direction: column;
+  }
+  .dropdown-content a {
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
+  }
+</style>

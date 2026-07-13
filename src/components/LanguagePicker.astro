@@ -4,7 +4,7 @@ import { getLocalizedUrl, t } from '../i18n';
 const nextLocale = Astro.currentLocale === 'en' ? 'fr' : 'en';
 ---
 <div class="language-picker">
-    <a href={getLocalizedUrl(nextLocale, Astro.url.pathname)}>
+    <a href={getLocalizedUrl(nextLocale, Astro.url.pathname)} hreflang={nextLocale}>
         {t('language', nextLocale)}
     </a>
 </div>

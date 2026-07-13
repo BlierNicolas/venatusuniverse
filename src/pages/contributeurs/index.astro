@@ -1,0 +1,13 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ContributorsContent from '../../components/ContributorsContent.astro';
+import { t } from '../../i18n';
+
+const locale = Astro.currentLocale ?? 'fr';
+const pageTitle = t('contributors', locale);
+---
+<Layout pageTitle={pageTitle}>
+  <main>
+    <ContributorsContent locale={locale} />
+  </main>
+</Layout>

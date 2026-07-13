@@ -1,0 +1,23 @@
+---
+import type { Entry } from 'contentful';
+import type { Project } from '../lib/contentful';
+import { t } from '../i18n';
+
+export interface Props {
+  item: Entry<Project>;
+  locale: string;
+}
+
+const { item, locale } = Astro.props;
+---
+<article>
+  <h1>{item.fields.title}</h1>
+  <p>{item.fields.summary}</p>
+  <div>
+    {item.fields.description?.split('\n').map((paragraph) => (
+      paragraph.trim() ? <p>{paragraph}</p> : null
+    ))}
+  </div>
+  <p><strong>{t('statusLabel', locale)}\u00A0:</strong> {item.fields.finished ? t('completed', locale) : t('inProgress', locale)}</p>
+  <p><strong>{t('typeLabel', locale)}\u00A0:</strong> {item.fields.projectType}</p>
+</article>

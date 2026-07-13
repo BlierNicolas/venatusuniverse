@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PowerList from '../../components/PowerList.astro';
+import { contentfulClient, type Power, mapLocale } from '../../lib/contentful';
+import { t } from '../../i18n';
+
+const locale = Astro.currentLocale ?? 'fr';
+const pageTitle = t('powers', locale);
+
+const response = await contentfulClient.getEntries<Power>({ content_type: 'pouvoir', locale: mapLocale(locale) });
+const powers = response.items.sort((a, b) => a.fields.name?.localeCompare(b.fields.name ?? '') ?? 0);
+---
+<Layout pageTitle={pageTitle}>
+  <main>
+    <PowerList items={powers} locale={locale} />
+  </main>
+</Layout>

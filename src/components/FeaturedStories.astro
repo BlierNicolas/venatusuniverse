@@ -1,10 +1,13 @@
 ---
 import StoryCard from "../components/StoryCard.astro";
-import { contentfulClient } from "../lib/contentful";
+import { contentfulClient, mapLocale } from "../lib/contentful";
 import type { Story } from "../lib/contentful";
+
+const { locale = 'fr' } = Astro.props;
 
 const entries = await contentfulClient.getEntries<Story>({
   content_type: "infosRomans",
+  locale: mapLocale(locale),
 });
 
 const featuredStories = entries.items
@@ -20,7 +23,7 @@ const featuredStories = entries.items
   });
 ---
 
-<div>
+<section>
   <h2>Histoires mises en avant</h2>
   <div>
     {
@@ -34,4 +37,4 @@ const featuredStories = entries.items
       ))
     }
   </div>
-</div>
+</section>

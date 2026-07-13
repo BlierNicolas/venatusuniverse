@@ -1,0 +1,56 @@
+---
+import type { Entry } from 'contentful';
+import type { Story, Chapter, Event, CalendarEntry } from '../lib/contentful';
+import { t } from '../i18n';
+
+export interface Props {
+  item: Entry<Story>;
+  chapters: Entry<Chapter>[];
+  relatedEvents: Entry<Event>[];
+  relatedCalendar: Entry<CalendarEntry>[];
+  locale: string;
+  spaceId: string;
+}
+
+const { item, chapters, relatedEvents, relatedCalendar, locale, spaceId } = Astro.props;
+const chBase = locale === 'fr' ? '/histoires/chapitre' : '/en/stories/chapter';
+const evBase = locale === 'fr' ? '/evenements' : '/en/events';
+
+const coverUrl = item.fields.coverImage?.sys?.id
+  ? `https://images.ctfassets.net/${spaceId}/${item.fields.coverImage.sys.id}`
+  : null;
+---
+<article>
+  {coverUrl && <img src={coverUrl} alt={item.fields.title} />}
+  <h1>{item.fields.title}</h1>
+  <p><strong>{item.fields.storyType}</strong></p>
+  <p>{item.fields.summary}</p>
+  <p>{t('chapterProgression', locale, { current: item.fields.currentChapter ?? 0, max: item.fields.maximumChapter ?? '?' })}</p>
+
+  <h2>{t('chaptersLabel', locale)}</h2>
+  <ol>
+    {chapters.map((ch) => (
+      <li><a href={`${chBase}/${ch.fields.slug}`}>{ch.fields.title}</a></li>
+    ))}
+  </ol>
+</article>
+  {relatedEvents.length > 0 && (
+    <section>
+      <h2>{t('relatedEvents', locale)}</h2>
+      <ul>
+        {relatedEvents.map((ev) => (
+          <li><a href={`${evBase}/${ev.sys.id}`}>{ev.fields.title}</a> &mdash; {ev.fields.dateSpe}</li>
+        ))}
+      </ul>
+    </section>
+  )}
+  {relatedCalendar.length > 0 && (
+    <section>
+      <h2>{t('relatedReleases', locale)}</h2>
+      <ul>
+        {relatedCalendar.map((cal) => (
+          <li>{cal.fields.title} &mdash; {cal.fields.dateSpe}</li>
+        ))}
+      </ul>
+    </section>
+  )}

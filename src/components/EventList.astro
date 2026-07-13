@@ -1,0 +1,26 @@
+---
+import type { Entry } from 'contentful';
+import type { Event } from '../lib/contentful';
+import { t } from '../i18n';
+
+export interface Props {
+  items: Entry<Event>[];
+  locale: string;
+}
+
+const { items, locale } = Astro.props;
+const base = locale === 'fr' ? '/evenements' : '/en/events';
+const title = t('events', locale);
+---
+<h1>{title}</h1>
+<ul>
+  {items.map((event) => (
+    <li>
+      <article>
+        <h2><a href={`${base}/${event.sys.id}`}>{event.fields.title}</a></h2>
+        <p class="date">{event.fields.dateSpe}</p>
+        <p>{event.fields.description}</p>
+      </article>
+    </li>
+  ))}
+</ul>

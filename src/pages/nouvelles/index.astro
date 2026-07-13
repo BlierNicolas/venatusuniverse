@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NewsList from '../../components/NewsList.astro';
+import { contentfulClient, type News, mapLocale } from '../../lib/contentful';
+import { t } from '../../i18n';
+
+const locale = Astro.currentLocale ?? 'fr';
+const pageTitle = t('news', locale);
+
+const response = await contentfulClient.getEntries<News>({ content_type: 'nouvelle', order: ['-fields.date'] as any, locale: mapLocale(locale) });
+const newsItems = response.items;
+---
+<Layout pageTitle={pageTitle}>
+  <main>
+    <NewsList items={newsItems} locale={locale} />
+  </main>
+</Layout>

@@ -1,0 +1,23 @@
+---
+import type { Entry } from 'contentful';
+import type { Group } from '../lib/contentful';
+import { t } from '../i18n';
+
+export interface Props {
+  items: Entry<Group>[];
+  locale: string;
+}
+
+const { items, locale } = Astro.props;
+const base = locale === 'fr' ? '/groupes' : '/en/groups';
+const title = t('groups', locale);
+---
+<h1>{title}</h1>
+<div class="groups-grid">
+  {items.map((group) => (
+    <article class="group-card">
+      <h2><a href={`${base}/${group.fields.slug}`}>{group.fields.groupName}</a></h2>
+      <p>{group.fields.description}</p>
+    </article>
+  ))}
+</div>

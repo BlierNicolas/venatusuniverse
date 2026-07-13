@@ -1,9 +1,36 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Jumbotron from '../../components/Jumbotron.astro';
+import FeaturedStories from '../../components/FeaturedStories.astro';
+import LatestNews from '../../components/LatestNews.astro';
+import UpcomingReleases from '../../components/UpcomingReleases.astro';
+import FeaturedProjects from '../../components/FeaturedProjects.astro';
+import { contentfulClient, type News, type CalendarEntry, type Project, mapLocale } from '../../lib/contentful';
+import { t } from '../../i18n';
 
-const pageTitle = "Home Page";
+const locale = Astro.currentLocale ?? 'en';
+const pageTitle = t('home', locale);
+
+const newsResponse = await contentfulClient.getEntries<News>({ content_type: 'nouvelle', order: ['-fields.date'] as any, limit: 3, locale: mapLocale(locale) });
+const releaseResponse = await contentfulClient.getEntries<CalendarEntry>({ content_type: 'calendrier', limit: 1, locale: mapLocale(locale) });
+const projectsResponse = await contentfulClient.getEntries<Project>({ content_type: 'project', 'fields.displayed': true, order: ['fields.order'] as any, locale: mapLocale(locale) });
 ---
 
 <Layout pageTitle={pageTitle}>
-	<h2>My awesome blog subtitle</h2>
+	<main>
+		<Jumbotron />
+
+		<FeaturedStories locale={locale} />
+
+		<LatestNews items={newsResponse.items} locale={locale} />
+
+		<UpcomingReleases items={releaseResponse.items} locale={locale} />
+
+		<section>
+			<h2>{t('creationTitle', locale)}</h2>
+			<p>{t('creationText', locale)}</p>
+		</section>
+
+		<FeaturedProjects items={projectsResponse.items} locale={locale} />
+	</main>
 </Layout>

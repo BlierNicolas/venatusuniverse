@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import GroupList from '../../components/GroupList.astro';
+import { contentfulClient, type Group, mapLocale } from '../../lib/contentful';
+import { t } from '../../i18n';
+
+const locale = Astro.currentLocale ?? 'fr';
+const pageTitle = t('groups', locale);
+
+const response = await contentfulClient.getEntries<Group>({ content_type: 'groupe', locale: mapLocale(locale) });
+const groups = response.items;
+---
+<Layout pageTitle={pageTitle}>
+  <main>
+    <GroupList items={groups} locale={locale} />
+  </main>
+</Layout>

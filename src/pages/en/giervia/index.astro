@@ -1,0 +1,21 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import GierviaList from '../../../components/GierviaList.astro';
+import { contentfulClient, type World, type Country, mapLocale } from '../../../lib/contentful';
+import { t } from '../../../i18n';
+
+const locale = Astro.currentLocale ?? 'en';
+const pageTitle = t('giervia', locale);
+const spaceId = import.meta.env.CONTENTFUL_SPACE_ID;
+
+const worldResponse = await contentfulClient.getEntries<World>({ content_type: 'monde', include: 2, locale: mapLocale(locale) });
+const world = worldResponse.items[0];
+
+const countryResponse = await contentfulClient.getEntries<Country>({ content_type: 'pays', locale: mapLocale(locale) });
+const countries = countryResponse.items.sort((a, b) => a.fields.name?.localeCompare(b.fields.name ?? '') ?? 0);
+---
+<Layout pageTitle={pageTitle}>
+  <main>
+    <GierviaList {world} countries={countries} locale={locale} spaceId={spaceId} />
+  </main>
+</Layout>

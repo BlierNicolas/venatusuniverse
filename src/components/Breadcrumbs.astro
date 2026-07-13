@@ -1,0 +1,70 @@
+---
+export interface Crumb {
+  label: string;
+  url?: string;
+}
+
+const { crumbs = [] } = Astro.props as { crumbs: Crumb[] };
+const site = "https://venatusuniverse.com";
+---
+
+<nav aria-label="Breadcrumb">
+  <ol>
+    {crumbs.map((crumb, i) => (
+      <li>
+        {crumb.url ? (
+          <a href={crumb.url}>{crumb.label}</a>
+        ) : (
+          <span aria-current="page">{crumb.label}</span>
+        )}
+        {i < crumbs.length - 1 && <span class="sep">/</span>}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": crumbs.map((crumb, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "name": crumb.label,
+    "item": crumb.url ? `${site}${crumb.url}` : undefined,
+  })),
+})} />
+
+<style>
+  nav {
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+  }
+  ol {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  a {
+    color: var(--link-color, #00539f);
+    text-decoration: underline;
+  }
+  a:hover {
+    text-decoration: none;
+  }
+  .sep {
+    color: #6b7280;
+    margin: 0 0.125rem;
+  }
+  [aria-current="page"] {
+    color: #374151;
+    font-weight: 600;
+  }
+</style>

@@ -1,0 +1,32 @@
+---
+import type { Entry } from 'contentful';
+import type { Character } from '../lib/contentful';
+import { t } from '../i18n';
+
+export interface Props {
+  items: Entry<Character>[];
+  locale: string;
+}
+
+const { items, locale } = Astro.props;
+const base = locale === 'fr' ? '/personnages' : '/en/characters';
+const title = t('characters', locale);
+
+const grouped: Record<string, typeof items> = {};
+for (const char of items) {
+  const letter = (char.fields.fullName?.[0] ?? '#').toUpperCase();
+  if (!grouped[letter]) grouped[letter] = [];
+  grouped[letter].push(char);
+}
+---
+<h1>{title}</h1>
+{Object.keys(grouped).sort().map((letter) => (
+  <section>
+    <h2>{letter}</h2>
+    <ul>
+      {grouped[letter].map((char) => (
+        <li><a href={`${base}/${char.fields.slug}`}>{char.fields.fullName}</a></li>
+      ))}
+    </ul>
+  </section>
+))}

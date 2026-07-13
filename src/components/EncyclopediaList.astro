@@ -1,0 +1,23 @@
+---
+import type { Entry } from 'contentful';
+import type { Theory } from '../lib/contentful';
+import { t } from '../i18n';
+
+export interface Props {
+  items: Entry<Theory>[];
+  locale: string;
+}
+
+const { items, locale } = Astro.props;
+const base = locale === 'fr' ? '/encyclopedie' : '/en/encyclopedia';
+const title = t('encyclopedia', locale);
+---
+<h1>{title}</h1>
+<div class="theories-grid">
+  {items.map((theory) => (
+    <article class="theory-card">
+      <h2><a href={`${base}/${theory.fields.slug}`}>{theory.fields.title}</a></h2>
+      <p>{theory.fields.description}</p>
+    </article>
+  ))}
+</div>

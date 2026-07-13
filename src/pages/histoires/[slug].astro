@@ -1,0 +1,45 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import StoryDetail from '../../components/StoryDetail.astro';
+import { contentfulClient, type Story, type Chapter, type Event, type CalendarEntry, mapLocale } from '../../lib/contentful';
+import { t } from '../../i18n';
+
+export async function getStaticPaths() {
+  const response = await contentfulClient.getEntries<Story>({ content_type: 'infosRomans', locale: 'fr-CA' });
+  return response.items.map((item) => ({
+    params: { slug: item.fields.slug },
+    props: { item },
+  }));
+}
+
+const { item } = Astro.props;
+const locale = Astro.currentLocale ?? 'fr';
+const spaceId = import.meta.env.CONTENTFUL_SPACE_ID;
+
+const allChaptersResponse = await contentfulClient.getEntries<Chapter>({
+  content_type: 'chapitre',
+  locale: mapLocale(locale),
+});
+const chapters = allChaptersResponse.items
+  .filter(ch => ch.fields.storyName?.trim().toLowerCase() === item.fields.slug?.trim().toLowerCase())
+  .sort((a, b) => (a.fields.order ?? 0) - (b.fields.order ?? 0));
+
+const eventResponse = await contentfulClient.getEntries<Event>({
+  content_type: 'evenements',
+  locale: mapLocale(locale),
+  'fields.storySlug': item.fields.slug,
+});
+const relatedEvents = eventResponse.items;
+
+const calendarResponse = await contentfulClient.getEntries<CalendarEntry>({
+  content_type: 'calendrier',
+  locale: mapLocale(locale),
+  'fields.romanSlug': item.fields.slug,
+});
+const relatedCalendar = calendarResponse.items;
+---
+<Layout pageTitle={item.fields.title} breadcrumbs={[{ label: t('stories', locale), url: '/histoires' }, { label: item.fields.title }]}>
+  <main>
+    <StoryDetail item={item} chapters={chapters} relatedEvents={relatedEvents} relatedCalendar={relatedCalendar} locale={locale} spaceId={spaceId} />
+  </main>
+</Layout>

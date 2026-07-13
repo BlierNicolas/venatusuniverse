@@ -1,19 +1,29 @@
 ---
-//import Favicon from "../assets/Favicon.astro";
-
-const { title = "Venatus Universe", ...props } = Astro.props;
+const { title = "Venatus Universe", description, canonical } = Astro.props;
+const site = "https://venatusuniverse.com";
+const defaultDesc = "L'Univers des Nouveaux Humains est un Univers fictif où 0.01% de la population mondiale possède des pouvoirs.";
+const metaDesc = description || defaultDesc;
+const canonicalUrl = canonical || site + Astro.url.pathname;
+const lang = Astro.currentLocale ?? 'fr';
 ---
+
 <link rel="sitemap" href="/sitemap-index.xml">
 <title>{title}</title>
-<meta name="description" content="Welcome to Venatus Universe, my fantasy universe!">
+<meta name="description" content={metaDesc} />
+<link rel="canonical" href={canonicalUrl} />
 
-<!-- Web analytics -->
-<script data-goatcounter="https://my-account.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-
-<!-- Open Graph tags -->
-<meta property="og:title" content="Venatus Universe" />
+<meta property="og:title" content={title} />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://www.venatusuniverse.com/" />
-<meta property="og:description" content="Welcome to Venatus Universe, my fantasy universe!" />
-<meta property="og:image" content="https://www.example.com/_astro/seo-banner.BZD7kegZ.webp">
-<meta property="og:image:alt" content="">
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:description" content={metaDesc} />
+<meta property="og:locale" content={lang === 'fr' ? 'fr_CA' : 'en_US'} />
+<meta property="og:site_name" content="Venatus Universe" />
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Venatus Universe",
+  "url": site,
+  "description": defaultDesc,
+  "inLanguage": lang === 'fr' ? 'fr-CA' : 'en-US',
+})} />

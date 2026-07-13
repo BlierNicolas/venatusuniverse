@@ -1,0 +1,41 @@
+---
+import type { Entry } from 'contentful';
+import type { Character, GroupMember } from '../lib/contentful';
+import { t } from '../i18n';
+
+export interface Props {
+  item: Entry<Character>;
+  memberships: Entry<GroupMember>[];
+  locale: string;
+  spaceId: string;
+}
+
+const { item, memberships, locale, spaceId } = Astro.props;
+const charBase = locale === 'fr' ? '/personnages' : '/en/characters';
+
+const imageUrl = item.fields.image?.sys?.id
+  ? `https://images.ctfassets.net/${spaceId}/${item.fields.image.sys.id}`
+  : null;
+---
+<article>
+  {imageUrl && <img src={imageUrl} alt={item.fields.fullName} />}
+  <h1>{item.fields.fullName}</h1>
+  {item.fields.age && <p>{t('ageLabel', locale)}\u00A0: {item.fields.age}</p>}
+  {item.fields.alignment && <p>{t('alignmentLabel', locale)}\u00A0: {item.fields.alignment}</p>}
+  {item.fields.birthDate && <p>{t('birthDateLabel', locale)}\u00A0: {item.fields.birthDate}</p>}
+  {item.fields.summary && <p>{item.fields.summary}</p>}
+  {item.fields.physic && <p><strong>{t('physiqueLabel', locale)}\u00A0:</strong> {item.fields.physic}</p>}
+  {item.fields.powerDescription && <p><strong>{t('powerLabel', locale)}\u00A0:</strong> {item.fields.powerDescription}</p>}
+  {item.fields.powerUrl && <p><a href={item.fields.powerUrl}>{item.fields.powerName}</a></p>}
+  {item.fields.appearance && <p><strong>{t('appearancesLabel', locale)}\u00A0:</strong> {item.fields.appearance}</p>}
+</article>
+  {memberships.length > 0 && (
+    <section>
+      <h2>{t('groupMemberships', locale)}</h2>
+      <ul>
+        {memberships.map((m) => (
+          <li><strong>{m.fields.groupName}</strong> &mdash; {m.fields.memberRole}</li>
+        ))}
+      </ul>
+    </section>
+  )}

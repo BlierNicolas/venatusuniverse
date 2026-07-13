@@ -1,0 +1,46 @@
+---
+import type { Entry } from 'contentful';
+import type { World, Country } from '../lib/contentful';
+import { t } from '../i18n';
+
+export interface Props {
+  world?: Entry<World>;
+  countries: Entry<Country>[];
+  locale: string;
+  spaceId: string;
+}
+
+const { world, countries, locale, spaceId } = Astro.props;
+const base = locale === 'fr' ? '/giervia' : '/en/giervia';
+const title = t('giervia', locale);
+
+const grouped: Record<string, typeof countries> = {};
+for (const country of countries) {
+  const continent = country.fields.continentName ?? t('otherContinent', locale);
+  if (!grouped[continent]) grouped[continent] = [];
+  grouped[continent].push(country);
+}
+
+const mapUrl = world?.fields.map?.sys?.id
+  ? `https://images.ctfassets.net/${spaceId}/${world.fields.map.sys.id}`
+  : null;
+---
+<h1>{title}</h1>
+
+{world && (
+  <section>
+    <h2>{world.fields.planetName}</h2>
+    {mapUrl && <img src={mapUrl} alt={`${t('mapOf', locale)} ${world.fields.planetName}`} />}
+  </section>
+)}
+
+{Object.keys(grouped).sort().map((continent) => (
+  <section>
+    <h2>{continent}</h2>
+    <ul>
+      {grouped[continent].map((country) => (
+        <li><a href={`${base}/${country.fields.slug}`}>{country.fields.name}</a></li>
+      ))}
+    </ul>
+  </section>
+))}

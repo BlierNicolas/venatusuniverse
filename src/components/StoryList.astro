@@ -1,0 +1,25 @@
+---
+import type { Entry } from 'contentful';
+import type { Story } from '../lib/contentful';
+import { t } from '../i18n';
+
+export interface Props {
+  items: Entry<Story>[];
+  locale: string;
+}
+
+const { items, locale } = Astro.props;
+const base = locale === 'fr' ? '/histoires' : '/en/stories';
+const title = t('stories', locale);
+const chapterLabel = t('chapter', locale);
+---
+<h1>{title}</h1>
+<div class="stories-grid">
+  {items.map((story) => (
+    <article class="story-card">
+      <h2><a href={`${base}/${story.fields.slug}`}>{story.fields.title}</a></h2>
+      <p>{story.fields.summary}</p>
+      <p>{story.fields.currentChapter ?? 0} / {story.fields.maximumChapter ?? '?'} {chapterLabel.toLowerCase()}s</p>
+    </article>
+  ))}
+</div>
